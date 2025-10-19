@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+# Alkalmazás könyvtár
+WORKDIR /app
+
+# package.json és lockfile másolása
+COPY package*.json ./
+
+# Függőségek telepítése
+RUN npm install
+
+# Forrás másolása
+COPY . .
+
+# Default parancs: dev server (Vite)
+CMD ["sh", "-c", "node src/setJsExpectations.js && npm run dev -- --host"]

@@ -1,7 +1,14 @@
 import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+
+// Betöltjük a .env fájlt
+dotenv.config();
+
+console.log(`MOCKSERVER_URL env variable: ${process.env.MOCKSERVER_URL}`)
+const MOCKSERVER_URL = process.env.MOCKSERVER_URL || 'http://localhost:1080';
 
 async function setExpectation() {
-  await fetch('http://localhost:1080/mockserver/expectation', {
+  await fetch(`${MOCKSERVER_URL}/mockserver/expectation`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

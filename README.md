@@ -1,4 +1,11 @@
-# Run with `npm run dev`
+# Docker build
+`docker build -t react-demo -f Dockerfile.dev .`
+
+# Docker run
+`docker run -it -p 5173:5173 react-demo`
+
+# Run with:
+ `npm run dev`
 
 # React + TypeScript + Vite
 
