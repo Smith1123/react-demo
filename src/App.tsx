@@ -23,6 +23,8 @@
 
 // export default App;
 import { useState } from 'react';
+import AutoComplete from './common/AutoComplete';
+import './App.css';
 
 function App() {
   const [javaMsg, setJavaMsg] = useState('');
@@ -38,14 +40,33 @@ function App() {
     setJsMsg(await res.text());
   };
 
+  const handleChange = (input) => {
+
+    if (!input.trim()) {
+      return [];
+    }
+
+    return ['alma', 'körte', 'citrom'];
+  };
+
   return (
-    <div style={{ padding: 20 }}>
-      <h1>MockServer Dual-Client Demo</h1>
-      <button onClick={callJava}>Call /java (Java expectation)</button>
-      <p>{javaMsg}</p>
-      <button onClick={callJs}>Call /js (JS expectation)</button>
-      <p>{jsMsg}</p>
-    </div>
+    <>
+      <div style={{ padding: 20 }}>
+        <h1>MockServer Dual-Client Demo</h1>
+        <button onClick={callJava}>Call /java (Java expectation)</button>
+        <p>{javaMsg}</p>
+        <button onClick={callJs}>Call /js (JS expectation)</button>
+        <p>{jsMsg}</p>
+      </div>
+      <div>
+        <h2>AutoComplete demo</h2>
+        <AutoComplete
+          labelValues={['alma', 'körte']}
+          multiple={true}
+          onChange={handleChange}
+        />
+      </div>
+    </>
   );
 }
 
