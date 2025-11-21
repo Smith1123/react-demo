@@ -1,34 +1,23 @@
-// import { useState, useEffect } from 'react'
-
-// function App() {
-//   const [message, setMessage] = useState('Loading...');
-
-//   useEffect(() => {
-//     fetch('http://localhost:1080/') // MockServer endpoint
-//       .then(res => res.text())
-//       .then(setMessage)
-//       .catch((e) => {
-//         setMessage('Error connecting to MockServer')
-//         console.error(e);
-//       });
-//   }, []);
-
-//   return (
-//     <div style={{ padding: '2rem', fontSize: '1.5rem' }}>
-//       <h1>MockServer says:</h1>
-//       <p>{message}</p>
-//     </div>
-//   )
-// }
-
-// export default App;
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Label from "./common//Label";
 import AutoComplete from './common/AutoComplete';
 import './App.css';
 
 function App() {
   const [javaMsg, setJavaMsg] = useState('');
   const [jsMsg, setJsMsg] = useState('');
+  const [autoCompleteValues, setAutoCompleteValues] = useState([]);
+  const [isEditable, setIsEditable] = useState(false);
+
+  useEffect(() => {
+    fetch('http://localhost:1080/autoComplete')
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+      setAutoCompleteValues(json.message);
+    })
+    .catch(error => console.error(error));
+  }, []);
 
   const callJava = async () => {
     const res = await fetch('http://localhost:1080/java');
@@ -46,7 +35,9 @@ function App() {
       return [];
     }
 
-    return ['alma', 'körte', 'citrom'];
+    return [autoCompleteValues.find(item =>
+      item.toLowerCase().includes(input.toLowerCase())
+    )];
   };
 
   return (
@@ -60,11 +51,26 @@ function App() {
       </div>
       <div>
         <h2>AutoComplete demo</h2>
-        <AutoComplete
-          labelValues={['alma', 'körte']}
-          multiple={true}
-          onChange={handleChange}
-        />
+        {!isEditable ? (
+          <div>
+            {autoCompleteValues && autoCompleteValues.map((label) => (
+              <Label key={label} label={label} />
+            ))}
+            <button onClick={() => setIsEditable(true)}>
+              Szerkeszt
+            </button>
+          </div>
+        ) : (
+          autoCompleteValues && autoCompleteValues.length > 0 && (
+            <AutoComplete
+              labelValues={autoCompleteValues}
+              multiple={true}
+              onChange={handleChange}
+              onConfirm={() => setIsEditable(false)}
+              onCancel={() => setIsEditable(false)}
+            />
+          )
+        )}
       </div>
     </>
   );
